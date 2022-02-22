@@ -32,6 +32,7 @@ public class BuilderTB implements ModInitializer {
         Registry.register(Registry.ITEM, TOOLBOX_IDENTIFIER, BUILDER_TOOLBOX_ITEM);
         TOOLBOX_SCREENHANDLER = ScreenHandlerRegistry.registerSimple(TOOLBOX_IDENTIFIER, ToolboxScreenHandler::new);
 
+        // Receive update packet after scrolling the toolbox
         ServerPlayNetworking.registerGlobalReceiver(BuilderTB.TOOLBOX_UPDATE_IDENTIFIER, (server, player, handler, buf, responseSender) -> {
             ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
 
