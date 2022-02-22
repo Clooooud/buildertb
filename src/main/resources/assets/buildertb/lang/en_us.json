@@ -1,0 +1,6 @@
+{
+  "item.buildertb.toolbox": "Builder's Toolbox",
+  "itemGroup.buildertb.general": "Builder's Toolbox",
+  "container.buildertb.toolbox": "Builder's Toolbox",
+  "tooltip.buildertb.toolbox": "§6SHIFT §7+ §6SCROLL §7in your main hand to select the block you want to place"
+}

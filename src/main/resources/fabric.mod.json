@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "buildertb",
+  "version": "${version}",
+  "name": "BuilderTB",
+  "description": "",
+  "authors": [
+    "Cloud"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/buildertb/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "fr.cloud.buildertb.BuilderTBClient"
+    ],
+    "main": [
+      "fr.cloud.buildertb.BuilderTB"
+    ]
+  },
+  "mixins": [
+    "buildertb.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13.2",
+    "fabric": "*",
+    "minecraft": "1.18.1"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "fr.cloud.buildertb.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "PlayerInventoryMixin"
+  ],
+  "client": [
+    "InGameHudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
