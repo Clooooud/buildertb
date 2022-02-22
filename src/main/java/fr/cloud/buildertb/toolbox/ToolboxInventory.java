@@ -12,6 +12,7 @@ import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,7 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
 
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(9, ItemStack.EMPTY);
     private int selectedSlot;
+    private Text title = null;
 
     public static ToolboxInventory getFromStack(ItemStack stack) {
         return new ToolboxInventory(stack);
@@ -33,6 +35,10 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
         if (!stack.getNbt().contains("toolbox")) {
             stack.getNbt().put("toolbox", new NbtCompound());
             stack.getNbt().getCompound("toolbox").putInt("slot", 0);
+        }
+
+        if (stack.hasCustomName()) {
+            title = stack.getName();
         }
 
         this.fromTag(stack.getNbt().getCompound("toolbox"));
@@ -146,7 +152,7 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
 
     @Override
     public Text getDisplayName() {
-        return new TranslatableText("container.buildertb.toolbox");
+        return title == null ? new TranslatableText("container.buildertb.toolbox").formatted(Formatting.YELLOW) : this.title.shallowCopy().formatted(Formatting.YELLOW);
     }
 
     @Nullable
