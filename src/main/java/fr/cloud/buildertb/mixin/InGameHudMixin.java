@@ -2,6 +2,7 @@ package fr.cloud.buildertb.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import fr.cloud.buildertb.BuilderTB;
+import fr.cloud.buildertb.BuilderTBClient;
 import fr.cloud.buildertb.toolbox.ToolboxInventory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -36,6 +37,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Shadow private int heldItemTooltipFade;
     @Shadow private ItemStack currentStack;
 
+    private MutableText tooltip = new LiteralText("");
+
     private final MinecraftClient client = MinecraftClient.getInstance();
 
     @Inject(method = "renderHotbar", at = @At("TAIL"))
@@ -57,6 +60,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
         this.drawTexture(matrices, x - 91, y, 0, 0, 182, 22);
 
         ToolboxInventory inventory = ToolboxInventory.getFromStack(currentStack);
+
+        if (inventory.isEmpty()) {
+            return;
+        }
+
+        if (inventory.updateSlotIfNeeded()) {
+            BuilderTBClient.sendUpdatePacket(inventory.getSelectedSlot());
+        }
 
         this.drawTexture(matrices, x - 92 + inventory.getSelectedSlot() * 20, y - 1, 0, 22, 24, 22);
 
@@ -84,15 +95,25 @@ public abstract class InGameHudMixin extends DrawableHelper {
         ci.cancel();
 
         this.client.getProfiler().push("selectedItemName");
-        if (this.heldItemTooltipFade > 0 && !this.currentStack.isEmpty()) {
+
+        MutableText mutableText = new LiteralText("").append(((MutableText)this.currentStack.getName()).formatted(Formatting.YELLOW));
+
+        ToolboxInventory inventory = ToolboxInventory.getFromStack(this.currentStack);
+        if (!inventory.isEmpty()) {
+            mutableText.append(new LiteralText(" - ").formatted(Formatting.GRAY)).append(inventory.getStack(inventory.getSelectedSlot()).getName());
+        }
+
+        if (!tooltip.equals(mutableText)) {
+            this.heldItemTooltipFade = 40;
+            tooltip = mutableText;
+        }
+
+        if ((this.heldItemTooltipFade > 0 && !this.currentStack.isEmpty())) {
             int l;
-            MutableText mutableText = new LiteralText("").append(this.currentStack.getName()).formatted(this.currentStack.getRarity().formatting);
-            if (this.currentStack.hasCustomName()) {
-                mutableText.formatted(Formatting.ITALIC);
-            }
+
             int i = this.getTextRenderer().getWidth(mutableText);
             int j = (this.scaledWidth - i) / 2;
-            int k = this.scaledHeight - 89;
+            int k = this.scaledHeight - 59 - 30;
             if (!this.client.interactionManager.hasStatusBars()) {
                 k += 14;
             }

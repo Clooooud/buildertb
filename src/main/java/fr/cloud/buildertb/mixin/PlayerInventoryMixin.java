@@ -1,6 +1,7 @@
 package fr.cloud.buildertb.mixin;
 
 import fr.cloud.buildertb.BuilderTB;
+import fr.cloud.buildertb.BuilderTBClient;
 import fr.cloud.buildertb.toolbox.ToolboxInventory;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -66,8 +67,6 @@ public abstract class PlayerInventoryMixin {
         inventory.applyChanges(stackInHand);
 
         // Update stack on the server-side
-        PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(selectedSlot);
-        ClientPlayNetworking.send(BuilderTB.TOOLBOX_UPDATE_IDENTIFIER, buf);
+        BuilderTBClient.sendUpdatePacket(inventory.getSelectedSlot());
     }
 }

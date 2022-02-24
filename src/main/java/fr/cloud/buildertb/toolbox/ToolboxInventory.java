@@ -44,6 +44,19 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
         this.fromTag(stack.getNbt().getCompound("toolbox"));
     }
 
+    public boolean updateSlotIfNeeded() {
+        int before = this.getSelectedSlot();
+        if (!this.isEmpty() && this.getStack(this.getSelectedSlot()).isEmpty()) {
+            int slot = 0;
+            while (this.getStack(slot).isEmpty()) {
+                slot++;
+            }
+
+            this.setSelectedSlot(slot);
+        }
+        return before == this.getSelectedSlot();
+    }
+
     @Override
     public void onClose(PlayerEntity player) {
         Inventory.super.onClose(player);

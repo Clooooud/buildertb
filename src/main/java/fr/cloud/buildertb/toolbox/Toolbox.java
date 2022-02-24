@@ -51,14 +51,7 @@ public class Toolbox extends Item {
             return ActionResult.PASS;
         }
 
-        if (inventory.getStack(inventory.getSelectedSlot()).isEmpty()) {
-            int slot = 0;
-            while (inventory.getStack(slot).isEmpty()) {
-                slot++;
-            }
-
-            inventory.setSelectedSlot(slot);
-        }
+        inventory.updateSlotIfNeeded();
 
         ItemStack stackToPlace = context.getPlayer().isCreative() ? inventory.getStack(inventory.getSelectedSlot()) : inventory.removeStack(inventory.getSelectedSlot(), 1);
         inventory.applyChanges(stack);
