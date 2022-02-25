@@ -74,13 +74,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
         this.setZOffset(offset);
         RenderSystem.defaultBlendFunc();
 
-        int m = 1;
-        int x2;
-        int y2;
-        for (int n = 0; n < 9; ++n) {
-            x2 = x - 90 + n * 20 + 2;
-            y2 = this.scaledHeight - 16 - 3 - 30;
-            this.renderHotbarItem(x2, y2, tickDelta, getCameraPlayer(), inventory.getStack(n), m++);
+        for (int n = 0; n < 9;) {
+            int x2 = x - 90 + n * 20 + 2;
+            int y2 = this.scaledHeight - 16 - 3 - 30;
+            this.renderHotbarItem(x2, y2, tickDelta, getCameraPlayer(), inventory.getStack(n), ++n);
         }
     }
 
@@ -109,22 +106,19 @@ public abstract class InGameHudMixin extends DrawableHelper {
         }
 
         if ((this.heldItemTooltipFade > 0 && !this.currentStack.isEmpty())) {
-            int l;
+            int opacity = Math.min((int)((float)this.heldItemTooltipFade * 256.0f / 10.0f), 255);
 
-            int i = this.getTextRenderer().getWidth(mutableText);
-            int j = (this.scaledWidth - i) / 2;
-            int k = this.scaledHeight - 59 - 30;
+            int width = this.getTextRenderer().getWidth(mutableText);
+            int x = (this.scaledWidth - width) / 2;
+            int y = this.scaledHeight - 59 - 30;
             if (!this.client.interactionManager.hasStatusBars()) {
-                k += 14;
+                y += 14;
             }
-            if ((l = (int)((float)this.heldItemTooltipFade * 256.0f / 10.0f)) > 255) {
-                l = 255;
-            }
-            if (l > 0) {
+            if (opacity > 0) {
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                InGameHud.fill(matrices, j - 2, k - 2, j + i + 2, k + this.getTextRenderer().fontHeight + 2, this.client.options.getTextBackgroundColor(0));
-                this.getTextRenderer().drawWithShadow(matrices, mutableText, (float)j, (float)k, 0xFFFFFF + (l << 24));
+                InGameHud.fill(matrices, x - 2, y - 2, x + width + 2, y + this.getTextRenderer().fontHeight + 2, this.client.options.getTextBackgroundColor(0));
+                this.getTextRenderer().drawWithShadow(matrices, mutableText, (float)x, (float)y, 0xFFFFFF + (opacity << 24));
                 RenderSystem.disableBlend();
             }
         }
