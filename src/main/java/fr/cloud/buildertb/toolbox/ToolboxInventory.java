@@ -28,20 +28,14 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
     }
 
     private ToolboxInventory(ItemStack stack) {
-        if (!stack.hasNbt()) {
-            stack.setNbt(new NbtCompound());
-        }
-
-        if (!stack.getNbt().contains("toolbox")) {
-            stack.getNbt().put("toolbox", new NbtCompound());
-            stack.getNbt().getCompound("toolbox").putInt("slot", 0);
-        }
+        NbtCompound nbt = stack.getOrCreateSubNbt("toolbox");
+        nbt.putInt("slot", 0);
 
         if (stack.hasCustomName()) {
             title = stack.getName();
         }
 
-        this.fromTag(stack.getNbt().getCompound("toolbox"));
+        this.fromTag(nbt);
     }
 
     public boolean updateSlotIfNeeded() {
@@ -65,11 +59,7 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
     }
 
     public void applyChanges(ItemStack stack) {
-        if (!stack.hasNbt()) {
-            stack.setNbt(new NbtCompound());
-        }
-
-        stack.getNbt().put("toolbox", toTag());
+        stack.getOrCreateNbt().put("toolbox", toTag());
     }
 
     private NbtCompound toTag() {
