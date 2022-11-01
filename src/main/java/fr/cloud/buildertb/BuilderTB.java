@@ -3,6 +3,7 @@ package fr.cloud.buildertb;
 import fr.cloud.buildertb.toolbox.Toolbox;
 import fr.cloud.buildertb.toolbox.ToolboxInventory;
 import fr.cloud.buildertb.toolbox.ToolboxScreenHandler;
+import java.util.Timer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -29,7 +30,7 @@ public class BuilderTB implements ModInitializer {
     @Override
     public void onInitialize() {
         Registry.register(Registry.ITEM, TOOLBOX_IDENTIFIER, BUILDER_TOOLBOX_ITEM);
-        TOOLBOX_SCREENHANDLER = ScreenHandlerRegistry.registerSimple(TOOLBOX_IDENTIFIER, ToolboxScreenHandler::new);
+        TOOLBOX_SCREENHANDLER = Registry.register(Registry.SCREEN_HANDLER, TOOLBOX_IDENTIFIER, new ScreenHandlerType<>(ToolboxScreenHandler::new));
 
         // Receive update packet after scrolling the toolbox
         ServerPlayNetworking.registerGlobalReceiver(BuilderTB.TOOLBOX_UPDATE_IDENTIFIER, (server, player, handler, buf, responseSender) -> {

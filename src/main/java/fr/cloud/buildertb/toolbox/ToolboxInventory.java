@@ -10,8 +10,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
@@ -29,7 +30,6 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
 
     private ToolboxInventory(ItemStack stack) {
         NbtCompound nbt = stack.getOrCreateSubNbt("toolbox");
-        nbt.putInt("slot", 0);
 
         if (stack.hasCustomName()) {
             title = stack.getName();
@@ -40,6 +40,7 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
 
     public boolean updateSlotIfNeeded() {
         int before = this.getSelectedSlot();
+
         if (!this.isEmpty() && this.getStack(this.getSelectedSlot()).isEmpty()) {
             int slot = 0;
             while (this.getStack(slot).isEmpty()) {
@@ -48,7 +49,8 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
 
             this.setSelectedSlot(slot);
         }
-        return before == this.getSelectedSlot();
+
+        return before != this.getSelectedSlot();
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
         stack.getOrCreateNbt().put("toolbox", toTag());
     }
 
-    private NbtCompound toTag() {
+    public NbtCompound toTag() {
         NbtCompound nbtCompound = new NbtCompound();
         NbtList nbtList = new NbtList();
 
@@ -81,7 +83,6 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
 
         nbtCompound.putInt("slot", selectedSlot);
         nbtCompound.put("items", nbtList);
-
         return nbtCompound;
     }
 
@@ -155,7 +156,7 @@ public class ToolboxInventory implements Inventory, NamedScreenHandlerFactory {
 
     @Override
     public Text getDisplayName() {
-        return title == null ? new TranslatableText("container.buildertb.toolbox").formatted(Formatting.YELLOW) : this.title.shallowCopy().formatted(Formatting.YELLOW);
+        return title == null ? MutableText.of(new TranslatableTextContent("container.buildertb.toolbox")).formatted(Formatting.YELLOW) : this.title.copy().formatted(Formatting.YELLOW);
     }
 
     @Nullable

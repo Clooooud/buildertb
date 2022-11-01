@@ -12,7 +12,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -37,7 +37,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Shadow private int heldItemTooltipFade;
     @Shadow private ItemStack currentStack;
 
-    private MutableText tooltip = new LiteralText("");
+    private MutableText tooltip = MutableText.of(new LiteralTextContent(""));
 
     private final MinecraftClient client = MinecraftClient.getInstance();
 
@@ -93,11 +93,11 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
         this.client.getProfiler().push("selectedItemName");
 
-        MutableText mutableText = new LiteralText("").append(((MutableText)this.currentStack.getName()).formatted(Formatting.YELLOW));
+        MutableText mutableText = MutableText.of(new LiteralTextContent("")).append(((MutableText)this.currentStack.getName()).formatted(Formatting.YELLOW));
 
         ToolboxInventory inventory = ToolboxInventory.getFromStack(this.currentStack);
         if (!inventory.isEmpty()) {
-            mutableText.append(new LiteralText(" - ").formatted(Formatting.GRAY)).append(inventory.getStack(inventory.getSelectedSlot()).getName());
+            mutableText.append(MutableText.of(new LiteralTextContent(" - ")).formatted(Formatting.GRAY)).append(inventory.getStack(inventory.getSelectedSlot()).getName());
         }
 
         if (!tooltip.equals(mutableText)) {
